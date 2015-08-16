@@ -28,18 +28,16 @@ public class Board {
 		boardTiles[6] = tile_6;
 		boardTiles[7] = tile_7;
 		boardTiles[8] = tile_8;
-		System.out.println("Created Tiles");
-		System.out.println(boardTiles[0]);
 	}
 	
 	public void printBoard()
 	{
 		System.out.println("\nPlayer: " + player);
-		System.out.println(boardTiles[0].returnValue() + " | " + boardTiles[1].returnValue() + " | " + boardTiles[2].returnValue());
-		System.out.println("---------");
-		System.out.println(boardTiles[3].returnValue() + " | " + boardTiles[4].returnValue() + " | " + boardTiles[5].returnValue());
-		System.out.println("---------");
-		System.out.println(boardTiles[6].returnValue() + " | " + boardTiles[7].returnValue() + " | " + boardTiles[8].returnValue());
+		System.out.println("\t\t" + boardTiles[0].returnValue() + " | " + boardTiles[1].returnValue() + " | " + boardTiles[2].returnValue());
+		System.out.println("\t\t---------");
+		System.out.println("\t\t" + boardTiles[3].returnValue() + " | " + boardTiles[4].returnValue() + " | " + boardTiles[5].returnValue());
+		System.out.println("\t\t---------");
+		System.out.println("\t\t" + boardTiles[6].returnValue() + " | " + boardTiles[7].returnValue() + " | " + boardTiles[8].returnValue());
 	}
 	
 	public void startGame(){
@@ -48,8 +46,20 @@ public class Board {
 		boolean gameRunning = true;
 		boolean goodPick;
 		boolean gameWon = false;
+		boolean isAI = false;
 		int playerInput;
+		int numPlayers = 0;
 		int turnCount = 0;
+		
+		//Check for number of players or AI
+		System.out.println("Welcome to Tic Tac Toe!");
+		System.out.println("How many players? (1, 2): ");		
+		numPlayers = keyboard.nextInt();
+		
+		if(numPlayers == 1)
+			isAI = true;
+		
+		
 		printBoard();
 		while(gameRunning)
 		{
@@ -104,15 +114,40 @@ public class Board {
 				gameRunning = false;
 			}
 			
-			if(player.equals("X"))
-				player = "O";
-			else
-				player = "X";
 			
-			printBoard();
+			if(!isAI)
+			{
+				if(player.equals("X"))
+					player = "O";
+				else
+					player = "X";
+			}
+			if(isAI)
+			{
+				boolean goodPickAI = false;
+				AI computadora = new AI();
+				int random = computadora.randomNum();
+				while(!goodPickAI)
+				{
+					if(!boardTiles[random].tileHasValue())
+					{
+						boardTiles[random].setValue("O");
+						goodPickAI = true;
+					}
+					else
+					{
+						random = computadora.randomNum();
+						goodPickAI = false;
+					}
+				}
+				
+			}
+			
+			if(!gameWon) printBoard();
 			
 			turnCount++;		
 		}
+		printBoard();
 		keyboard.close();
 		System.out.println("\tGame Over");
 	}
@@ -120,34 +155,16 @@ public class Board {
 	public boolean checkWin()
 	{	
 		
-		if(isWin(0,3,6))
-			return true;
-		
-		else if(isWin(1,4,7))
-			return true;
-		
-		else if(isWin(2,5,8))
-			return true;
-		
-		else if(isWin(0,1,2))
-			return true;
-		
-		else if(isWin(3,4,5))
-			return true;
-		
-		else if(isWin(6, 7, 8))
-			return true;
-		
-		else if(isWin(0,4,8))
-			return true;
-		
-		else if(isWin(2,4,6))
-			return true;
-				
+		if(isWin(0,3,6)) 		return true;
+		else if(isWin(1,4,7)) 	return true;
+		else if(isWin(2,5,8))	return true;
+		else if(isWin(0,1,2))	return true;
+		else if(isWin(3,4,5))	return true;
+		else if(isWin(6,7,8))	return true;
+		else if(isWin(0,4,8))	return true;
+		else if(isWin(2,4,6))	return true;
 		else
 			return false;
-		
-		
 		
 	}
 	public boolean isWin(int first, int second, int third)
@@ -158,6 +175,5 @@ public class Board {
 			return false;
 	}
 	
-	//AI! NEXT TIME!
-
+	
 }
